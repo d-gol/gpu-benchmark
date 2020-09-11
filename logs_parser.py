@@ -46,7 +46,7 @@ for pod_name in pod_names:
     csv_line = model + ',' + batch_size + ',' + ps_replicas + ',' + worker_replicas + ',' + nvidia_plugin + ',' + \
                 start_time + ',' + end_time + ',' + imgs_per_second + ',,,,'
     
-    with open('experiments.csv', 'w') as csv_file:
+    with open('experiments.csv', 'a') as csv_file:
         csv_file.write(csv_line)
     
     print(model, batch_size, ps_replicas, worker_replicas, nvidia_plugin, start_time, end_time, imgs_per_second)
