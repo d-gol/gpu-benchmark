@@ -21,11 +21,10 @@ for pod_name in pod_names:
             line_split = line.split('\s')
             end_time = line_split[0].split('|')[1]
             
-    spec_option = 'spec.nodeName='
-    out = subprocess.check_output(['kubectl', 'get', 'pod', pod_name, '-o', 'go-template="{{.spec.nodeName}}"'])
-    print(out)
+    
+    nodeName = subprocess.check_output(['kubectl', 'get', 'pod', pod_name, '-o', 'go-template="{{.spec.nodeName}}"'])  
+    spec_option = 'spec.nodeName=' + nodeName.decode('UTF-8')
             
-    nvidia_line = subprocess.check_output(['kubectl', 'get', 'pod', '-A', '--field-selector', spec_option, 'grep', 'nvidia'])
-    print(nvidia_line)
+    nvidia_plugin = subprocess.check_output(['kubectl', 'get', 'pod', '-A', '--field-selector', spec_option, 'grep', 'nvidia']).decode('UTF-8')
 
-    print(pod_name, start_time, end_time)
+    print(pod_name, nvidia_plugin, start_time, end_time)
