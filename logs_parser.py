@@ -8,6 +8,12 @@ pod_names = []
 for line in pods_lines:
     if line.startswith(pod_template_name) and 'worker' in line:
         pod_names.append(line.split('\s')[0])
+        
+csv_header = 'model,batch-size,replicas-ps,replicas-workers,nvidia-plugins,start-time,end-time,imgs-per-second,\
+    gpu-utilization,gpu-memory,gpu-power-usage,gpu-temperature'
+
+with open('experiments.csv', 'w') as csv_file:
+    csv_file.write(csv_header)
 
 for pod_name in pod_names:
     logs = subprocess.check_output(['kubectl', 'logs', pod_name])
@@ -34,7 +40,13 @@ for pod_name in pod_names:
     pod_name_split = pod_name.split('-')
     model = pod_name_split[2]
     batch_size = pod_name_split[3]
-    ps_replicas = 1
-    worker_replicas = 1
-
+    ps_replicas = '1'
+    worker_replicas = '1'
+    
+    csv_line = model + ',' + batch_size + ',' + ps_replicas + ',' + worker_replicas + ',' + nvidia_plugin + ',' + \
+                start_time + ',' + end_time + ',' + imgs_per_second + ',,,,'
+    
+    with open('experiments.csv', 'w') as csv_file:
+        csv_file.write(csv_line)
+    
     print(model, batch_size, ps_replicas, worker_replicas, nvidia_plugin, start_time, end_time, imgs_per_second)
