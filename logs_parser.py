@@ -25,6 +25,6 @@ for pod_name in pod_names:
     nodeName = subprocess.check_output(['kubectl', 'get', 'pod', pod_name, '-o', 'go-template="{{.spec.nodeName}}"'])  
     spec_option = 'spec.nodeName=' + nodeName.decode('UTF-8')
             
-    nvidia_plugin = subprocess.check_output(['kubectl', 'get', 'pod', '-A', '--field-selector', spec_option, 'grep', 'nvidia']).decode('UTF-8')
+    nvidia_plugin = subprocess.check_output(['kubectl', 'get', 'pod', '-A', '--field-selector', spec_option, '|', 'grep', 'nvidia']).decode('UTF-8')
 
     print(pod_name, nvidia_plugin, start_time, end_time)
