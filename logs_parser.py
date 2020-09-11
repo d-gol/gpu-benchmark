@@ -9,8 +9,7 @@ for line in pods_lines:
     if line.startswith(pod_template_name) and 'worker' in line:
         pod_names.append(line.split('\s')[0])
         
-csv_header = 'model,batch-size,replicas-ps,replicas-workers,nvidia-plugins,start-time,end-time,imgs-per-second,\
-    gpu-utilization,gpu-memory,gpu-power-usage,gpu-temperature'
+csv_header = 'model,batch-size,replicas-ps,replicas-workers,nvidia-plugins,start-time,end-time,imgs-per-second,gpu-utilization,gpu-memory,gpu-power-usage,gpu-temperature\n'
 
 with open('experiments.csv', 'w') as csv_file:
     csv_file.write(csv_header)
@@ -44,7 +43,7 @@ for pod_name in pod_names:
     worker_replicas = '1'
     
     csv_line = model + ',' + batch_size + ',' + ps_replicas + ',' + worker_replicas + ',' + nvidia_plugin + ',' + \
-                start_time + ',' + end_time + ',' + imgs_per_second + ',,,,'
+                start_time + ',' + end_time + ',' + imgs_per_second + ',,,,\n'
     
     with open('experiments.csv', 'a') as csv_file:
         csv_file.write(csv_line)
