@@ -18,7 +18,7 @@ for pod_name in pod_names:
             line_split = line.split('\s')
             start_time = line_split[0].split('|')[1]
         elif 'total images/sec' in line:
-            line_split = line.split('\s')
+            line_split = line.split()
             end_time = line_split[0].split('|')[1]
             imgs_per_second = line_split[-1]
     
