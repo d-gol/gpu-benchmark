@@ -10,9 +10,9 @@ for line in pods_lines:
         pod_names.append(line.split('\s')[0])
 
 for pod_name in pod_names:
-    res = subprocess.check_output(['kubectl', 'logs', pod_name])
+    logs = subprocess.check_output(['kubectl', 'logs', pod_name])
 
-    lines = res.decode('UTF-8').split('\n')
+    lines = logs.decode('UTF-8').split('\n')
     for line in lines: 
         if '1\timages/sec' in line:
             line_split = line.split('\s')
@@ -20,5 +20,10 @@ for pod_name in pod_names:
         elif 'total images/sec' in line:
             line_split = line.split('\s')
             end_time = line_split[0].split('|')[1]
+            
+    spec_option = 'spec.nodeName=$(kubectl get pod ' + pod_name +  ' -o go-template="{{.spec.nodeName}}")'
+            
+    nvidia_line = subprocess.check_output(['kubectl', 'get', 'pod', '-A', '--field-selector', spec_option, 'grep', 'nvidia'])
+    print(nvidia_line)
 
     print(pod_name, start_time, end_time)
