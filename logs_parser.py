@@ -20,7 +20,7 @@ for pod_name in pod_names:
         elif 'total images/sec' in line:
             line_split = line.split('\s')
             end_time = line_split[0].split('|')[1]
-            
+            imgs_per_second = line_split[-1]
     
     nodeName = subprocess.check_output(['kubectl', 'get', 'pod', pod_name, '-o', 'go-template="{{.spec.nodeName}}"']).decode('UTF-8')[1:-1]
     spec_option = 'spec.nodeName=' + nodeName
@@ -30,5 +30,11 @@ for pod_name in pod_names:
     for line in nvidia_plugin_lines:
         if 'nvidia' in line:
             nvidia_plugin = line.split()[1]
+            
+    pod_name_split = pod_name.split('-')
+    model = pod_name_split[2]
+    batch_size = pod_name_split[3]
+    ps_replicas = 1
+    worker_replicas = 1
 
-    print(pod_name, nvidia_plugin, start_time, end_time)
+    print(model, batch_size, ps_replicas, worker_replicas, nvidia_plugin, start_time, end_time, imgs_per_second)
