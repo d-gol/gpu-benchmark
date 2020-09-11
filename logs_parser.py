@@ -21,7 +21,9 @@ for pod_name in pod_names:
             line_split = line.split('\s')
             end_time = line_split[0].split('|')[1]
             
-    spec_option = 'spec.nodeName=$(kubectl get pod ' + pod_name +  ' -o go-template="{{.spec.nodeName}}")'
+    spec_option = 'spec.nodeName='
+    out = subprocess.check_output(['kubectl', 'get', 'pod', pod_name, '-o', 'go-template="{{.spec.nodeName}}"'])
+    print(out)
             
     nvidia_line = subprocess.check_output(['kubectl', 'get', 'pod', '-A', '--field-selector', spec_option, 'grep', 'nvidia'])
     print(nvidia_line)
