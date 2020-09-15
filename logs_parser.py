@@ -1,5 +1,7 @@
 import subprocess
+import sys
 
+output_file_name = sys.argv[1]
 log_pods = subprocess.check_output(['kubectl', 'get', 'pods'])
 pods_lines = log_pods.decode('UTF-8').split()
 
@@ -11,7 +13,7 @@ for line in pods_lines:
         
 csv_header = 'model,batch-size,replicas-ps,replicas-workers,nvidia-plugins,start-time,end-time,imgs-per-second,gpu-utilization,gpu-memory,gpu-power-usage,gpu-temperature\n'
 
-with open('experiments.csv', 'w') as csv_file:
+with open(output_file_name, 'w') as csv_file:
     csv_file.write(csv_header)
 
 for pod_name in pod_names:
@@ -45,7 +47,7 @@ for pod_name in pod_names:
     csv_line = model + ',' + batch_size + ',' + ps_replicas + ',' + worker_replicas + ',' + nvidia_plugin + ',' + \
                 start_time + ',' + end_time + ',' + imgs_per_second + ',,,,\n'
     
-    with open('experiments.csv', 'a') as csv_file:
+    with open(output_file_name, 'a') as csv_file:
         csv_file.write(csv_line)
     
     print(model, batch_size, ps_replicas, worker_replicas, nvidia_plugin, start_time, end_time, imgs_per_second)
