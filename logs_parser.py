@@ -2,14 +2,23 @@ import subprocess
 import sys
 
 output_file_name = sys.argv[1]
+
 log_pods = subprocess.check_output(['kubectl', 'get', 'pods'])
 pods_lines = log_pods.decode('UTF-8').split()
 
 pod_template_name = 'dejan-tfjob-'
+
 pod_names = []
+ps_replicas = 0
+worker_replicas = 0
+
 for line in pods_lines:
-    if line.startswith(pod_template_name) and 'worker' in line:
-        pod_names.append(line.split('\s')[0])
+    if line.startswith(pod_template_name):
+        if 'worker' in line:
+            pod_names.append(line.split('\s')[0])
+            worker_replicas += 1
+        elif 'ps' in line:
+            ps_replicas += 1
         
 csv_header = 'model,batch-size,replicas-ps,replicas-workers,nvidia-plugins,start-time,end-time,imgs-per-second,gpu-utilization,gpu-memory,gpu-power-usage,gpu-temperature\n'
 
@@ -41,10 +50,8 @@ for pod_name in pod_names:
     pod_name_split = pod_name.split('-')
     model = pod_name_split[2]
     batch_size = pod_name_split[3]
-    ps_replicas = '1'
-    worker_replicas = '1'
     
-    csv_line = model + ',' + batch_size + ',' + ps_replicas + ',' + worker_replicas + ',' + nvidia_plugin + ',' + \
+    csv_line = model + ',' + batch_size + ',' + str(ps_replicas) + ',' + str(worker_replicas) + ',' + nvidia_plugin + ',' + \
                 start_time + ',' + end_time + ',' + imgs_per_second + ',,,,\n'
     
     with open(output_file_name, 'a') as csv_file:
